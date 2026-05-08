@@ -1,13 +1,21 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
+
+val localProperties = Properties()
+localProperties.load(rootProject.file("local.properties").inputStream())
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
     namespace = "com.nhdtech.apps.weathermind"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.nhdtech.apps.weathermind"
@@ -17,6 +25,9 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "API_KEY", "\"${localProperties.getProperty("API_KEY")}\"")
+        buildConfigField("String", "BASE_URL", "\"${localProperties.getProperty("BASE_URL")}\"")
     }
 
     buildTypes {
@@ -29,12 +40,22 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_17)
+        }
+    }
+}
+
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
 }
 
 dependencies {
@@ -46,6 +67,39 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+
+    // --- Navigation ---
+    implementation(libs.androidx.navigation.compose)
+
+    // --- Hilt ---
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+
+    // Hilt + WorkManager
+    implementation(libs.androidx.hilt.work)
+    ksp(libs.androidx.hilt.compiler)
+
+    // --- Retrofit ---
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.serialization)
+
+    // --- OkHttp ---
+    implementation(libs.okhttp.logging)
+
+    // --- Serialization ---
+    implementation(libs.kotlinx.serialization.json)
+
+    // --- Room ---
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
+
+    // --- WorkManager ---
+    implementation(libs.androidx.work.runtime)
+
+    // --- Coroutines ---
+    implementation(libs.kotlinx.coroutines.android)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
