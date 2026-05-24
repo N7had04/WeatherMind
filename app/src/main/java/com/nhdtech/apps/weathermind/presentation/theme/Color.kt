@@ -1,4 +1,4 @@
-package com.nhdtech.apps.weathermind.ui.theme
+package com.nhdtech.apps.weathermind.presentation.theme
 
 import androidx.compose.ui.graphics.Color
 

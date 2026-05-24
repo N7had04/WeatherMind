@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.nhdtech.apps.weathermind.ui.theme.WeatherMindTheme
+import com.nhdtech.apps.weathermind.presentation.theme.WeatherMindTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
