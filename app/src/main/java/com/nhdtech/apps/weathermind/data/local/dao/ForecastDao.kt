@@ -6,7 +6,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.nhdtech.apps.weathermind.data.local.entity.ForecastEntity
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ForecastDao {
@@ -17,5 +16,5 @@ interface ForecastDao {
     suspend fun deleteCurrentForecast(forecast: ForecastEntity)
 
     @Query("SELECT * FROM forecast")
-    fun getAllForecasts(): Flow<List<ForecastEntity>>
+    suspend fun getAllForecasts(): List<ForecastEntity>
 }
