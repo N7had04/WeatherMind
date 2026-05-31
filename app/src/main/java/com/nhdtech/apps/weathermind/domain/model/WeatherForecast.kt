@@ -1,7 +1,5 @@
 package com.nhdtech.apps.weathermind.domain.model
 
-import com.nhdtech.apps.weathermind.data.local.entity.ForecastDay
-
 data class WeatherForecast(
     val locationName: String,
     val temperatureCelsius: Double,
@@ -19,5 +17,5 @@ data class WeatherForecast(
     val windKph: Double,
     val windMph: Double,
     val chanceOfRain: Int,
-    val forecastDay: List<ForecastDay>
+    val forecastDay: List<WeatherForecastDay>
 )

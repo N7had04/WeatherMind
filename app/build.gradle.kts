@@ -71,6 +71,9 @@ dependencies {
     // --- Navigation ---
     implementation(libs.androidx.navigation.compose)
 
+    // ViewModel
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+
     // --- Hilt ---
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
@@ -81,7 +84,7 @@ dependencies {
 
     // --- Retrofit ---
     implementation(libs.retrofit)
-    implementation(libs.retrofit.serialization)
+    implementation(libs.retrofit.kotlinx.serialization)
 
     // --- OkHttp ---
     implementation(libs.okhttp.logging)
@@ -99,6 +102,7 @@ dependencies {
 
     // --- Coroutines ---
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.coroutines.core)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
