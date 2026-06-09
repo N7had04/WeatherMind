@@ -21,4 +21,11 @@ dependencyResolutionManagement {
 
 rootProject.name = "WeatherMind"
 include(":app")
- 
+include(":core:data")
+include(":core:domain")
+include(":feature-home:ui")
+include(":feature-home:domain")
+include(":feature-home:data")
+include(":feature-cities:data")
+include(":feature-cities:ui")
+include(":feature-cities:domain")

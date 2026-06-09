@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <bytecodeTargetLevel target="21" />
+    <bytecodeTargetLevel target="17">
+      <module name="WeatherMind.data" target="21" />
+      <module name="WeatherMind.domain" target="17" />
+      <module name="WeatherMind.domain.main" target="17" />
+      <module name="WeatherMind.domain.test" target="17" />
+      <module name="WeatherMind.feature-detail.data" target="21" />
+      <module name="WeatherMind.feature-detail.ui" target="21" />
+      <module name="WeatherMind.feature-saved.data" target="21" />
+      <module name="WeatherMind.feature-saved.ui" target="21" />
+      <module name="WeatherMind.feature.cities" target="21" />
+      <module name="WeatherMind.feature.home.presentation" target="21" />
+    </bytecodeTargetLevel>
   </component>
 </project>
