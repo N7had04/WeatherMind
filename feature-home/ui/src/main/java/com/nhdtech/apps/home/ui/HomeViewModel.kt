@@ -4,7 +4,10 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nhdtech.apps.domain.model.WeatherForecast
+import com.nhdtech.apps.domain.usecase.GetAtmosphericPressureUnitUseCase
 import com.nhdtech.apps.domain.usecase.GetForecastFromApiUseCase
+import com.nhdtech.apps.domain.usecase.GetTemperatureUnitUseCase
+import com.nhdtech.apps.domain.usecase.GetWindSpeedUnitUseCase
 import com.nhdtech.apps.domain.usecase.SaveForecastToDbUseCase
 import com.nhdtech.apps.domain.util.Resource
 import com.nhdtech.apps.home.domain.usecase.GetAllForecastsFromDbUseCase
@@ -12,7 +15,7 @@ import com.nhdtech.apps.home.domain.usecase.GetCurrentLocationUseCase
 import com.nhdtech.apps.home.domain.usecase.GetHasAccessedLocationUseCase
 import com.nhdtech.apps.home.domain.usecase.GetLocationForecastUseCase
 import com.nhdtech.apps.home.domain.usecase.SetHasAccessedLocationUseCase
-import com.nhdtech.apps.home.domain.util.AppConstants
+import com.nhdtech.apps.domain.util.AppConstants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -32,12 +35,25 @@ class HomeViewModel @Inject constructor(
     private val getForecastFromApiUseCase: GetForecastFromApiUseCase,
     private val getCurrentLocationUseCase: GetCurrentLocationUseCase,
     getHasAccessedLocationUseCase: GetHasAccessedLocationUseCase,
-    private val setHasAccessedLocationUseCase: SetHasAccessedLocationUseCase
+    private val setHasAccessedLocationUseCase: SetHasAccessedLocationUseCase,
+    getTemperatureUnitUseCase: GetTemperatureUnitUseCase,
+    getWindSpeedUnitUseCase: GetWindSpeedUnitUseCase,
+    getAtmosphericPressureUnitUseCase: GetAtmosphericPressureUnitUseCase
 ): ViewModel() {
     private val _state = MutableStateFlow(HomeUiState())
     val state = _state.asStateFlow()
 
     init {
+        getTemperatureUnitUseCase()
+            .onEach { _state.update { s -> s.copy(temperatureUnit = it) } }
+            .launchIn(viewModelScope)
+        getWindSpeedUnitUseCase()
+            .onEach { _state.update { s -> s.copy(windSpeedUnit = it) } }
+            .launchIn(viewModelScope)
+        getAtmosphericPressureUnitUseCase()
+            .onEach { _state.update { s -> s.copy(atmosphericPressureUnit = it) } }
+            .launchIn(viewModelScope)
+
         viewModelScope.launch {
             val hasAccessed = getHasAccessedLocationUseCase().first()
             _state.update { it.copy(hasAccessedLocationBefore = hasAccessed) }
@@ -46,15 +62,13 @@ class HomeViewModel @Inject constructor(
                 .onEach { _state.update { s -> s.copy(hasAccessedLocationBefore = it) } }
                 .launchIn(this)
 
-            getAllForecastsFromDbUseCase()
-                .onEach { forecasts ->
-                    _state.update { it.copy(savedForecasts = forecasts) }
-                }
-                .launchIn(this)
-
-            val initialForecasts = getAllForecastsFromDbUseCase().first()
+            val forecastsFlow = getAllForecastsFromDbUseCase()
+            val initialForecasts = forecastsFlow.first()
             Log.d("HomeViewModel", "Initial forecasts: $initialForecasts")
             updateForecast(initialForecasts)
+            forecastsFlow
+                .onEach { forecasts -> _state.update { it.copy(savedForecasts = forecasts) } }
+                .launchIn(this)
         }
     }
 

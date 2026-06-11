@@ -27,5 +27,7 @@ data class ForecastEntity(
     val chanceOfRain: Int,
     @ColumnInfo(defaultValue = "0")
     val lastUpdatedEpoch: Long,
+    @ColumnInfo(defaultValue = "")
+    val lastUpdated: String,
     val forecastDay: List<ForecastDay>
 )

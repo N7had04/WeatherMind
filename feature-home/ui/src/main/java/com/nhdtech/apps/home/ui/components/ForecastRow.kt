@@ -14,11 +14,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.nhdtech.apps.domain.model.WeatherForecastDay
+import com.nhdtech.apps.home.ui.HomeUiState
 
 @Composable
 fun ForecastRow(
     modifier: Modifier = Modifier,
-    day: WeatherForecastDay
+    day: WeatherForecastDay,
+    state: HomeUiState
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -41,20 +43,21 @@ fun ForecastRow(
             )
 
             Text(
-                text = "${day.maxWindKph}km/h",
+                text = "${if (state.windSpeedUnit == "km/h") day.maxWindKph else day.maxWindMph}" +
+                        if (state.windSpeedUnit == "km/h") "km/h" else "mph",
                 color = Color.White,
                 fontSize = 12.sp
             )
         }
 
         Text(
-            text = "L:${day.minTempCelsius}°",
+            text = "L:${if (state.temperatureUnit == "°C") day.minTempCelsius else day.minTempFahrenheit}°",
             color = Color.White,
             fontSize = 16.sp
         )
 
         Text(
-            text = "H:${day.maxTempCelsius}°",
+            text = "H:${if (state.temperatureUnit == "°C") day.maxTempCelsius else day.maxTempFahrenheit}°",
             color = Color.White,
             fontSize = 16.sp
         )

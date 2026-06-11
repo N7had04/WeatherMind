@@ -1,7 +1,6 @@
 package com.nhdtech.apps.data.local.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -13,8 +12,8 @@ interface ForecastDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCurrentForecast(forecast: ForecastEntity)
 
-    @Delete
-    suspend fun deleteCurrentForecast(forecast: ForecastEntity)
+    @Query("DELETE FROM forecast WHERE locationName = :locationName")
+    suspend fun deleteCurrentForecast(locationName: String)
 
     @Query("SELECT * FROM forecast")
     fun getAllForecasts(): Flow<List<ForecastEntity>>

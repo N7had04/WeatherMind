@@ -2,7 +2,7 @@ package com.nhdtech.apps.home.data.di
 
 import com.nhdtech.apps.data.local.dao.ForecastDao
 import com.nhdtech.apps.data.network.service.ForecastService
-import com.nhdtech.apps.home.data.local.datastore.AppPreferences
+import com.nhdtech.apps.home.data.local.datastore.HomePreferences
 import com.nhdtech.apps.home.data.repository.ForecastRepositoryImpl
 import com.nhdtech.apps.home.domain.repository.ForecastRepository
 import dagger.Module
@@ -19,8 +19,8 @@ class HomeRepositoryModule {
     fun provideHomeForecastRepository(
         forecastDao: ForecastDao,
         service: ForecastService,
-        appPreferences: AppPreferences
+        homePreferences: HomePreferences
     ): ForecastRepository {
-        return ForecastRepositoryImpl(forecastDao, service, appPreferences)
+        return ForecastRepositoryImpl(forecastDao, service, homePreferences)
     }
 }

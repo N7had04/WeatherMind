@@ -8,5 +8,8 @@ data class HomeUiState(
     val isLoading: Boolean = false,
     val error: String? = null,
     val locationPermissionGranted: Boolean = false,
-    val hasAccessedLocationBefore: Boolean = false
+    val hasAccessedLocationBefore: Boolean = false,
+    val temperatureUnit: String = "",
+    val windSpeedUnit: String = "",
+    val atmosphericPressureUnit: String = ""
 )

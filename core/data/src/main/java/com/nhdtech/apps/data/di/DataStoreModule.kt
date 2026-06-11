@@ -1,11 +1,11 @@
-package com.nhdtech.apps.home.data.di
+package com.nhdtech.apps.data.di
 
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStoreFile
-import com.nhdtech.apps.home.data.local.datastore.AppPreferences
+import com.nhdtech.apps.data.local.datastore.AppPreferences
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,7 +23,6 @@ object DataStoreModule {
     fun provideDataStore(
         @ApplicationContext context: Context
     ): DataStore<Preferences> {
-
         return PreferenceDataStoreFactory.create(
             produceFile = {
                 context.preferencesDataStoreFile(DATASTORE_NAME)
@@ -31,9 +30,9 @@ object DataStoreModule {
         )
     }
 
-    @Provides
     @Singleton
-    fun provideAppPreferences(
+    @Provides
+    fun provideSettingsPreferences(
         dataStore: DataStore<Preferences>
     ): AppPreferences {
         return AppPreferences(dataStore)

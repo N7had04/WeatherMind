@@ -84,5 +84,8 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.play.services)
 
+    // --- DataStore ---
+    implementation(libs.androidx.datastore.preferences)
+
     implementation(project(":core:domain"))
 }

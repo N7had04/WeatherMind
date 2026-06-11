@@ -22,6 +22,8 @@
             <option value="$PROJECT_DIR$/feature-home/data" />
             <option value="$PROJECT_DIR$/feature-home/domain" />
             <option value="$PROJECT_DIR$/feature-home/ui" />
+            <option value="$PROJECT_DIR$/feature-settings" />
+            <option value="$PROJECT_DIR$/feature-settings/ui" />
           </set>
         </option>
       </GradleProjectSettings>

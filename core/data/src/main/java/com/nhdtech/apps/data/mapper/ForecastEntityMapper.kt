@@ -76,6 +76,7 @@ fun ForecastEntity.toDomain(): WeatherForecast {
         windMph = windMph,
         chanceOfRain = chanceOfRain,
         lastUpdatedEpoch = lastUpdatedEpoch,
+        lastUpdated = lastUpdated,
         forecastDay = forecastDay.map { it.toDomain() }
     )
 }
@@ -99,6 +100,7 @@ fun WeatherForecast.toEntity(): ForecastEntity {
         windMph = windMph,
         chanceOfRain = chanceOfRain,
         lastUpdatedEpoch = lastUpdatedEpoch,
+        lastUpdated = lastUpdated,
         forecastDay = forecastDay.map { it.toEntity() }
     )
 }

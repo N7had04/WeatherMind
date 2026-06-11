@@ -1,7 +1,7 @@
 package com.nhdtech.apps.data.di
 
 import com.nhdtech.apps.data.local.dao.ForecastDao
-import com.nhdtech.apps.data.network.service.ForecastService
+import com.nhdtech.apps.data.network.service.AutoCompleteService
 import com.nhdtech.apps.data.repository.CitiesRepositoryImpl
 import com.nhdtech.apps.domain.repository.CitiesRepository
 import dagger.Module
@@ -16,8 +16,9 @@ class CitiesRepositoryModule {
     @Singleton
     @Provides
     fun provideCitiesRepository(
-        forecastDao: ForecastDao
+        forecastDao: ForecastDao,
+        service: AutoCompleteService
     ): CitiesRepository {
-        return CitiesRepositoryImpl(forecastDao)
+        return CitiesRepositoryImpl(forecastDao, service)
     }
 }

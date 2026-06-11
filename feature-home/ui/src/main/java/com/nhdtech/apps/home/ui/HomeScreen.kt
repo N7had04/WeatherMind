@@ -1,4 +1,4 @@
-package com.nhdtech.apps.home.ui.screens
+package com.nhdtech.apps.home.ui
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -31,7 +31,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.nhdtech.apps.home.ui.HomeUiState
 import com.nhdtech.apps.home.ui.components.ForecastCard
 import com.nhdtech.apps.home.ui.components.PagerIndicator
 
@@ -112,7 +111,8 @@ fun HomeScreen(
                     pageSpacing = 16.dp
                 ) { page ->
                     ForecastCard(
-                        forecast = state.savedForecasts[page]
+                        forecast = state.savedForecasts[page],
+                        state = state
                     )
                 }
 

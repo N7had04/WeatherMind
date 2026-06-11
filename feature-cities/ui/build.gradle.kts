@@ -47,6 +47,9 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 
+    // ViewModel
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+
     implementation(project(":core:domain"))
     implementation(project(":feature-cities:domain"))
     implementation(project(":feature-home:domain"))

@@ -7,7 +7,7 @@ import androidx.datastore.preferences.core.edit
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class AppPreferences(private val dataStore: DataStore<Preferences>) {
+class HomePreferences(private val dataStore: DataStore<Preferences>) {
     companion object {
         private val HAS_ACCESSED_LOCATION = booleanPreferencesKey("has_accessed_location")
     }

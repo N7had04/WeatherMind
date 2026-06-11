@@ -18,5 +18,6 @@ data class WeatherForecast(
     val windMph: Double,
     val chanceOfRain: Int,
     val lastUpdatedEpoch: Long,
+    val lastUpdated: String,
     val forecastDay: List<WeatherForecastDay>
 )

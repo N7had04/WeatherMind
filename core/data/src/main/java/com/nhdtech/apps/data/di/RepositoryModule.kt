@@ -1,6 +1,7 @@
 package com.nhdtech.apps.data.di
 
 import com.nhdtech.apps.data.local.dao.ForecastDao
+import com.nhdtech.apps.data.local.datastore.AppPreferences
 import com.nhdtech.apps.data.network.service.ForecastService
 import com.nhdtech.apps.data.repository.CoreRepositoryImpl
 import com.nhdtech.apps.domain.repository.CoreRepository
@@ -17,8 +18,9 @@ class RepositoryModule {
     @Singleton
     fun provideCoreRepository(
         service: ForecastService,
-        forecastDao: ForecastDao
+        forecastDao: ForecastDao,
+        appPreferences: AppPreferences
     ): CoreRepository {
-        return CoreRepositoryImpl(service, forecastDao)
+        return CoreRepositoryImpl(service, forecastDao, appPreferences)
     }
 }

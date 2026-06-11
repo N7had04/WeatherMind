@@ -11,10 +11,10 @@ import com.nhdtech.apps.data.local.entity.ForecastEntity
 import com.nhdtech.apps.data.local.entity.ForecastHour
 
 @Database(
-    version = 2,
+    version = 3,
     entities = [ForecastEntity::class, ForecastDay::class, ForecastHour::class],
     exportSchema = true,
-    autoMigrations = [AutoMigration(from = 1, to = 2)]
+    autoMigrations = [AutoMigration(from = 1, to = 2), AutoMigration(from = 2, to = 3)]
 )
 @TypeConverters(ForecastConverters::class)
 abstract class ForecastDatabase: RoomDatabase() {

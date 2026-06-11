@@ -67,6 +67,9 @@ dependencies {
     // Coil
     implementation(libs.coil.compose)
 
+    // ViewModel
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+
     implementation(project(":feature-home:domain"))
     implementation(project(":core:domain"))
     implementation(project(":feature-home:data"))

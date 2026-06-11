@@ -85,6 +85,7 @@ dependencies {
     implementation(project(":feature-cities:data"))
     implementation(project(":feature-cities:ui"))
     implementation(project(":feature-cities:domain"))
+    implementation(project(":feature-settings:ui"))
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

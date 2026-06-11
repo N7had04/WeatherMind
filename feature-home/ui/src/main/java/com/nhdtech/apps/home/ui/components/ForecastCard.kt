@@ -37,11 +37,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.nhdtech.apps.domain.model.WeatherForecast
+import com.nhdtech.apps.home.ui.HomeUiState
 
 @Composable
 fun ForecastCard(
     modifier: Modifier = Modifier,
-    forecast: WeatherForecast
+    forecast: WeatherForecast,
+    state: HomeUiState
 ) {
     Column(
         modifier = modifier
@@ -60,7 +62,7 @@ fun ForecastCard(
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "${forecast.temperatureCelsius}°",
+            text = "${if (state.temperatureUnit == "°C") forecast.temperatureCelsius else forecast.temperatureFahrenheit}°",
             fontSize = 96.sp,
             color = Color.White
         )
@@ -76,7 +78,8 @@ fun ForecastCard(
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "H:${forecast.forecastDay[0].maxTempCelsius}° L:${forecast.forecastDay[0].minTempCelsius}°",
+            text = "H:${if (state.temperatureUnit == "°C") forecast.forecastDay[0].maxTempCelsius else forecast.forecastDay[0].maxTempFahrenheit}° " +
+                    "L:${if (state.temperatureUnit == "°C") forecast.forecastDay[0].minTempCelsius else forecast.forecastDay[0].minTempFahrenheit}°",
             fontSize = 24.sp,
             color = Color.White
         )
@@ -127,7 +130,10 @@ fun ForecastCard(
                 Spacer(modifier = Modifier.height(4.dp))
                 HorizontalDivider(thickness = 1.dp, color = Color.Gray)
                 Spacer(modifier = Modifier.height(4.dp))
-                ForecastRow(day = day)
+                ForecastRow(
+                    day = day,
+                    state = state
+                )
             }
         }
 
@@ -145,7 +151,7 @@ fun ForecastCard(
                     verticalArrangement = Arrangement.SpaceEvenly
                 ) {
                     Text(
-                        text = "${hour.temperatureCelsius}°",
+                        text = "${if (state.temperatureUnit == "°C") hour.temperatureCelsius else hour.temperatureFahrenheit}°",
                         fontSize = 16.sp,
                         color = Color.White
                     )
@@ -157,7 +163,8 @@ fun ForecastCard(
                     )
 
                     Text(
-                        text = "${hour.windSpeedKph}km/h",
+                        text = "${if (state.windSpeedUnit == "km/h") hour.windSpeedKph else hour.windSpeedMph}" +
+                                if (state.windSpeedUnit == "km/h") "km/h" else "mph",
                         fontSize = 12.sp,
                         color = Color.White
                     )
@@ -206,14 +213,15 @@ fun ForecastCard(
                     modifier = Modifier.weight(1f).aspectRatio(1f),
                     icon = Icons.Default.Thermostat,
                     title = "FEELS LIKE",
-                    value = "${forecast.feelsLikeCelsius}°"
+                    value = "${if (state.temperatureUnit == "°C") forecast.feelsLikeCelsius else forecast.feelsLikeFahrenheit}°"
                 )
 
                 WeatherComponentCard(
                     modifier = Modifier.weight(1f).aspectRatio(1f),
                     icon = Icons.Default.Air,
                     title = "WIND",
-                    value = "${forecast.winDirection} ${forecast.windKph}km/h"
+                    value = "${forecast.winDirection} ${if (state.windSpeedUnit == "km/h") forecast.windKph else forecast.windMph}" +
+                            if (state.windSpeedUnit == "km/h") "km/h" else "mph"
                 )
             }
 
@@ -234,7 +242,8 @@ fun ForecastCard(
                     modifier = Modifier.weight(1f).aspectRatio(1f),
                     icon = Icons.Default.Speed,
                     title = "PRESSURE",
-                    value = "${forecast.pressureMb}mbar"
+                    value = "${if (state.atmosphericPressureUnit == "mbar") forecast.pressureMb else forecast.pressureIn}" +
+                            if (state.atmosphericPressureUnit == "mbar") "mbar" else "inHg"
                 )
             }
         }
