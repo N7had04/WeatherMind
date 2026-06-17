@@ -25,6 +25,12 @@ class CitiesRepositoryImpl(
         }
     }
 
+    override suspend fun updateSortOrder(forecasts: List<CitiesForecast>) {
+        forecasts.forEachIndexed { index, forecast ->
+            forecastDao.updateSortOrder(forecast.locationName, index)
+        }
+    }
+
     override suspend fun searchCities(query: String): Resource<List<City>> {
         return try {
             val response = service.searchCities(query)

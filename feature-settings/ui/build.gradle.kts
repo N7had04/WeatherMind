@@ -69,6 +69,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
 
     implementation(project(":core:domain"))
+    implementation(project(":core:ui"))
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

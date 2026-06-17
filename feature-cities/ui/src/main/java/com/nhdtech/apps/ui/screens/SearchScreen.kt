@@ -2,6 +2,7 @@ package com.nhdtech.apps.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -18,6 +20,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -26,8 +29,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.nhdtech.apps.ui.CitiesUiState
+import com.nhdtech.apps.ui.theme.Error
 
 @Composable
 fun SearchScreen(
@@ -43,12 +46,11 @@ fun SearchScreen(
 
     Column(
         modifier = modifier
-            .background(Color.Black)
+            .background(MaterialTheme.colorScheme.primary)
             .fillMaxSize()
             .padding(16.dp)
+            .statusBarsPadding()
     ) {
-        Spacer(modifier = Modifier.height(32.dp))
-
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
@@ -57,7 +59,7 @@ fun SearchScreen(
                 value = searchCityText,
                 onValueChange = {
                     onSearchCityTextChange(it)
-                    onSearch(searchCityText)
+                    onSearch(it)
                 },
                 modifier = Modifier.weight(0.8f),
                 shape = RoundedCornerShape(16.dp),
@@ -65,7 +67,7 @@ fun SearchScreen(
                     Icon(
                         imageVector = Icons.Default.Search,
                         contentDescription = "Search",
-                        tint = Color.White
+                        tint = MaterialTheme.colorScheme.onTertiary
                     )
                 },
                 trailingIcon = {
@@ -73,7 +75,7 @@ fun SearchScreen(
                         Icon(
                             imageVector = Icons.Default.Close,
                             contentDescription = "Close",
-                            tint = Color.White,
+                            tint = MaterialTheme.colorScheme.onTertiary,
                             modifier = Modifier.clickable {
                                 onSearchCityTextChange("")
                                 onSearch("")
@@ -83,12 +85,15 @@ fun SearchScreen(
                 },
                 singleLine = true,
                 colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.DarkGray,
-                    unfocusedContainerColor = Color.DarkGray,
-                    disabledContainerColor = Color.DarkGray,
+                    focusedContainerColor = MaterialTheme.colorScheme.tertiary,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.tertiary,
+                    disabledContainerColor = MaterialTheme.colorScheme.tertiary,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent
+                    disabledIndicatorColor = Color.Transparent,
+                    focusedTextColor = MaterialTheme.colorScheme.onTertiary,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onTertiary,
+                    disabledTextColor = MaterialTheme.colorScheme.onTertiary
                 )
             )
 
@@ -96,8 +101,8 @@ fun SearchScreen(
 
             Text(
                 text = "Cancel",
-                color = Color(0xFF0627C7),
-                fontSize = 16.sp,
+                color = Error,
+                style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier
                     .weight(0.2f)
                     .clickable{
@@ -110,61 +115,67 @@ fun SearchScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        if (searchCityText.isEmpty()) {
-            Spacer(modifier = Modifier.height(250.dp))
-            Text(
-                text = "Search for a city",
-                color = Color.White,
-                fontSize = 20.sp,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            )
-        }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+        ) {
+            when {
+                searchCityText.isEmpty() -> {
+                    Spacer(modifier = Modifier.height(250.dp))
+                    Text(
+                        text = "Search for a city",
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
 
-        when {
-            state.isLoading -> {
-                Spacer(modifier = Modifier.height(250.dp))
-                CircularProgressIndicator(
-                    color = Color(0xFF0627C7),
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                )
-            }
-            state.error != null -> {
-                Spacer(modifier = Modifier.height(250.dp))
-                Text(
-                    text = state.error,
-                    color = Color.White,
-                    fontSize = 20.sp,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                )
-            }
-            state.cities.isNotEmpty() -> {
-                LazyColumn(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    items(cities) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable{ onGetForecast(it.name) }
-                        ) {
-                            Column {
-                                Text(
-                                    text = it.name,
-                                    color = Color.White,
-                                    fontSize = 24.sp
-                                )
+                state.isLoading -> {
+                    Spacer(modifier = Modifier.height(250.dp))
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+                state.error != null -> {
+                    Spacer(modifier = Modifier.height(250.dp))
+                    Text(
+                        text = state.error,
+                        color = Error,
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+                state.cities.isNotEmpty() -> {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        items(cities) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable{ onGetForecast(it.name) }
+                            ) {
+                                Column {
+                                    Text(
+                                        text = it.name,
+                                        color = MaterialTheme.colorScheme.onPrimary,
+                                        style = MaterialTheme.typography.headlineSmall
+                                    )
 
-                                Spacer(modifier = Modifier.height(4.dp))
+                                    Spacer(modifier = Modifier.height(4.dp))
 
-                                Text(
-                                    text = "${it.region}, ${it.country}",
-                                    color = Color.Gray,
-                                    fontSize = 16.sp
-                                )
+                                    Text(
+                                        text = "${it.region}, ${it.country}",
+                                        color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f),
+                                        style = MaterialTheme.typography.bodyLarge
+                                    )
+                                }
                             }
-                        }
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                            Spacer(modifier = Modifier.height(16.dp))
+                        }
                     }
                 }
             }

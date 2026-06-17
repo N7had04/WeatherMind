@@ -6,8 +6,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -21,7 +25,8 @@ fun PagerIndicator(
     currentPage: Int
 ) {
     Row(
-        horizontalArrangement = Arrangement.spacedBy(6.dp)
+        horizontalArrangement = Arrangement.Center,
+        modifier = Modifier.fillMaxWidth()
     ) {
         repeat(pageCount) { index ->
 
@@ -41,8 +46,10 @@ fun PagerIndicator(
                 modifier = Modifier
                     .size(size)
                     .clip(CircleShape)
-                    .background(Color.White.copy(alpha = alpha))
+                    .background(MaterialTheme.colorScheme.onPrimary)
             )
+
+            Spacer(modifier = Modifier.width(4.dp))
         }
     }
 }

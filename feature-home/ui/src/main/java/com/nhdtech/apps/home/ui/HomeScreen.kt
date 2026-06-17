@@ -7,6 +7,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -15,6 +16,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
@@ -23,6 +26,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -33,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.nhdtech.apps.home.ui.components.ForecastCard
 import com.nhdtech.apps.home.ui.components.PagerIndicator
+import com.nhdtech.apps.ui.theme.Error
 
 @SuppressLint("MissingPermission")
 @Composable
@@ -56,13 +61,17 @@ fun HomeScreen(
         }
     }
 
+    val pagerState = rememberPagerState {
+        state.savedForecasts.size
+    }
+
     Column(
         modifier = modifier
-            .background(Color(0xFF2C334D))
+            .background(MaterialTheme.colorScheme.primary)
             .fillMaxSize()
-            .padding(horizontal = 16.dp, vertical = 32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
+            .statusBarsPadding()
+            .padding(bottom = 32.dp, start = 16.dp, end = 16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row(
             horizontalArrangement = Arrangement.End,
@@ -75,57 +84,72 @@ fun HomeScreen(
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = "Add",
-                    tint = Color.White,
-                    modifier = Modifier.clickable{ onNavigateToCities() }
+                    tint = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier
+                        .clickable { onNavigateToCities() }
+                        .size(32.dp)
                 )
 
                 Icon(
                     imageVector = Icons.Default.Settings,
                     contentDescription = "Settings",
-                    tint = Color.White,
-                    modifier = Modifier.clickable{ onNavigateToSettings() }
+                    tint = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier
+                        .clickable { onNavigateToSettings() }
+                        .size(32.dp)
                 )
             }
         }
 
-        when {
-            state.isLoading -> {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
-            }
-            state.savedForecasts.isEmpty() -> {
-                Text(
-                    text = "No saved cities yet",
-                    color = Color.White,
-                    fontSize = 24.sp
-                )
-            }
-            else -> {
-                val pagerState = rememberPagerState(
-                    pageCount = { state.savedForecasts.size }
-                )
-
-                HorizontalPager(
-                    state = pagerState,
-                    modifier = Modifier.weight(1f),
-                    contentPadding = PaddingValues(horizontal = 8.dp),
-                    pageSpacing = 16.dp
-                ) { page ->
-                    ForecastCard(
-                        forecast = state.savedForecasts[page],
-                        state = state
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+        ) {
+            when {
+                state.isLoading -> {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                }
+                state.error != null -> {
+                    Text(
+                        text = state.error,
+                        color = Error,
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.align(Alignment.Center)
                     )
                 }
+                state.savedForecasts.isNotEmpty() -> {
+                    Column(
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        HorizontalPager(
+                            state = pagerState,
+                            modifier = Modifier.weight(1f),
+                            contentPadding = PaddingValues(horizontal = 8.dp),
+                            pageSpacing = 16.dp
+                        ) { page ->
+                            if (page < state.savedForecasts.size) {
+                                ForecastCard(
+                                    forecast = state.savedForecasts[page],
+                                    state = state
+                                )
+                            }
+                        }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
 
-                HorizontalDivider(thickness = 1.dp, color = Color.Gray)
+                        HorizontalDivider(
+                            thickness = 1.dp,
+                            color = Color.Gray
+                        )
 
-                Spacer(modifier = Modifier.height(16.dp))
-
-                PagerIndicator(
-                    pageCount = state.savedForecasts.size,
-                    currentPage = pagerState.currentPage
-                )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        PagerIndicator(
+                            pageCount = state.savedForecasts.size,
+                            currentPage = pagerState.currentPage
+                        )
+                    }
+                }
             }
         }
     }

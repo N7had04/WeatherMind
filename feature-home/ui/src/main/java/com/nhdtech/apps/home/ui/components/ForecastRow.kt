@@ -5,13 +5,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.nhdtech.apps.domain.model.WeatherForecastDay
 import com.nhdtech.apps.home.ui.HomeUiState
@@ -29,8 +28,8 @@ fun ForecastRow(
     ) {
         Text(
             text = day.date,
-            color = Color.White,
-            fontSize = 16.sp
+            color = MaterialTheme.colorScheme.onSecondary,
+            style = MaterialTheme.typography.bodyLarge
         )
 
         Column(
@@ -45,21 +44,21 @@ fun ForecastRow(
             Text(
                 text = "${if (state.windSpeedUnit == "km/h") day.maxWindKph else day.maxWindMph}" +
                         if (state.windSpeedUnit == "km/h") "km/h" else "mph",
-                color = Color.White,
-                fontSize = 12.sp
+                color = MaterialTheme.colorScheme.onSecondary,
+                style = MaterialTheme.typography.labelMedium
             )
         }
 
         Text(
-            text = "L:${if (state.temperatureUnit == "°C") day.minTempCelsius else day.minTempFahrenheit}°",
-            color = Color.White,
-            fontSize = 16.sp
+            text = "L:${if (state.temperatureUnit == "°C") day.minTempCelsius.toInt() else day.minTempFahrenheit.toInt()}°",
+            color = MaterialTheme.colorScheme.onSecondary,
+            style = MaterialTheme.typography.bodyLarge
         )
 
         Text(
-            text = "H:${if (state.temperatureUnit == "°C") day.maxTempCelsius else day.maxTempFahrenheit}°",
-            color = Color.White,
-            fontSize = 16.sp
+            text = "H:${if (state.temperatureUnit == "°C") day.maxTempCelsius.toInt() else day.maxTempFahrenheit.toInt()}°",
+            color = MaterialTheme.colorScheme.onSecondary,
+            style = MaterialTheme.typography.bodyLarge
         )
     }
 }

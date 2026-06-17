@@ -8,6 +8,7 @@ import com.nhdtech.apps.data.network.service.ForecastService
 import com.nhdtech.apps.domain.model.WeatherForecast
 import com.nhdtech.apps.domain.repository.CoreRepository
 import com.nhdtech.apps.domain.util.Resource
+import com.nhdtech.apps.domain.util.ThemeMode
 import kotlinx.coroutines.flow.Flow
 
 class CoreRepositoryImpl(
@@ -45,6 +46,10 @@ class CoreRepositoryImpl(
         return appPreferences.atmosphericPressureUnit
     }
 
+    override fun getThemeMode(): Flow<ThemeMode> {
+        return appPreferences.themeMode
+    }
+
     override suspend fun setTemperatureUnit(value: String) {
         appPreferences.setTemperatureUnit(value)
     }
@@ -55,5 +60,9 @@ class CoreRepositoryImpl(
 
     override suspend fun setAtmosphericPressureUnit(value: String) {
         appPreferences.setAtmosphericPressureUnit(value)
+    }
+
+    override suspend fun setThemeMode(mode: ThemeMode) {
+        appPreferences.setThemeMode(mode)
     }
 }

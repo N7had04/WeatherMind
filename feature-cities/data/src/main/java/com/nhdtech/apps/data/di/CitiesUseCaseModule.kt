@@ -4,6 +4,7 @@ import com.nhdtech.apps.domain.repository.CitiesRepository
 import com.nhdtech.apps.domain.usecase.DeleteForecastFromDbUseCase
 import com.nhdtech.apps.domain.usecase.GetAllCitiesForecastsFromDbUseCase
 import com.nhdtech.apps.domain.usecase.SearchCitiesUseCase
+import com.nhdtech.apps.domain.usecase.UpdateForecastOrderUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,6 +28,14 @@ class CitiesUseCaseModule {
         repository: CitiesRepository
     ): GetAllCitiesForecastsFromDbUseCase {
         return GetAllCitiesForecastsFromDbUseCase(repository)
+    }
+
+    @Singleton
+    @Provides
+    fun provideUpdateForecastOrderUseCase(
+        repository: CitiesRepository
+    ): UpdateForecastOrderUseCase {
+        return UpdateForecastOrderUseCase(repository)
     }
 
     @Singleton

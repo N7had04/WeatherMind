@@ -4,10 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nhdtech.apps.domain.usecase.GetAtmosphericPressureUnitUseCase
 import com.nhdtech.apps.domain.usecase.GetTemperatureUnitUseCase
+import com.nhdtech.apps.domain.usecase.GetThemeModeUseCase
 import com.nhdtech.apps.domain.usecase.GetWindSpeedUnitUseCase
 import com.nhdtech.apps.domain.usecase.SetAtmosphericPressureUnitUseCase
 import com.nhdtech.apps.domain.usecase.SetTemperatureUnitUseCase
+import com.nhdtech.apps.domain.usecase.SetThemeModeUseCase
 import com.nhdtech.apps.domain.usecase.SetWindSpeedUnitUseCase
+import com.nhdtech.apps.domain.util.ThemeMode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,7 +27,9 @@ class SettingsViewModel @Inject constructor(
     getWindSpeedUnitUseCase: GetWindSpeedUnitUseCase,
     private val setWindSpeedUnitUseCase: SetWindSpeedUnitUseCase,
     getAtmosphericPressureUnitUseCase: GetAtmosphericPressureUnitUseCase,
-    private val setAtmosphericPressureUnitUseCase: SetAtmosphericPressureUnitUseCase
+    private val setAtmosphericPressureUnitUseCase: SetAtmosphericPressureUnitUseCase,
+    getThemeModeUseCase: GetThemeModeUseCase,
+    private val setThemeModeUseCase: SetThemeModeUseCase
 ): ViewModel() {
     private val _state = MutableStateFlow(SettingsUiState())
     val state = _state.asStateFlow()
@@ -40,6 +45,9 @@ class SettingsViewModel @Inject constructor(
 
         getAtmosphericPressureUnitUseCase()
             .onEach { _state.update { s -> s.copy(atmosphericPressureUnit = it) } }
+            .launchIn(viewModelScope)
+        getThemeModeUseCase()
+            .onEach { _state.update { s -> s.copy(themeMode = it) } }
             .launchIn(viewModelScope)
     }
 
@@ -58,6 +66,12 @@ class SettingsViewModel @Inject constructor(
     fun onSetAtmosphericPressureUnit(unit: String) {
         viewModelScope.launch {
             setAtmosphericPressureUnitUseCase(unit)
+        }
+    }
+
+    fun onSetThemeMode(mode: ThemeMode) {
+        viewModelScope.launch {
+            setThemeModeUseCase(mode)
         }
     }
 }

@@ -26,13 +26,13 @@ import androidx.compose.material.icons.filled.WaterDrop
 import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -54,34 +54,33 @@ fun ForecastCard(
     ) {
         Text(
             text = forecast.locationName,
-            fontSize = 32.sp,
-            color = Color.White,
-            fontWeight = FontWeight.Bold
+            style = MaterialTheme.typography.headlineLarge,
+            color = MaterialTheme.colorScheme.onPrimary
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "${if (state.temperatureUnit == "°C") forecast.temperatureCelsius else forecast.temperatureFahrenheit}°",
-            fontSize = 96.sp,
-            color = Color.White
+            text = "${if (state.temperatureUnit == "°C") forecast.temperatureCelsius.toInt() else forecast.temperatureFahrenheit.toInt()}°",
+            style = MaterialTheme.typography.displayLarge.copy(fontSize = 96.sp),
+            color = MaterialTheme.colorScheme.onPrimary
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
             text = forecast.conditionText,
-            fontSize = 24.sp,
-            color = Color.White
+            style = MaterialTheme.typography.headlineSmall,
+            color = MaterialTheme.colorScheme.onPrimary
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "H:${if (state.temperatureUnit == "°C") forecast.forecastDay[0].maxTempCelsius else forecast.forecastDay[0].maxTempFahrenheit}° " +
-                    "L:${if (state.temperatureUnit == "°C") forecast.forecastDay[0].minTempCelsius else forecast.forecastDay[0].minTempFahrenheit}°",
-            fontSize = 24.sp,
-            color = Color.White
+            text = "H:${if (state.temperatureUnit == "°C") forecast.forecastDay[0].maxTempCelsius.toInt() else forecast.forecastDay[0].maxTempFahrenheit.toInt()}° " +
+                    "L:${if (state.temperatureUnit == "°C") forecast.forecastDay[0].minTempCelsius.toInt() else forecast.forecastDay[0].minTempFahrenheit.toInt()}°",
+            style = MaterialTheme.typography.headlineSmall,
+            color = MaterialTheme.colorScheme.onPrimary
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -89,13 +88,13 @@ fun ForecastCard(
         Row(
             modifier = Modifier
                 .clip(RoundedCornerShape(16.dp))
-                .background(Color(0xFF343f5e))
+                .background(MaterialTheme.colorScheme.secondary)
                 .padding(8.dp)
         ) {
             Text(
                 text = "AQI: ${forecast.airQualityIndex}",
-                fontSize = 24.sp,
-                color = Color.White,
+                style = MaterialTheme.typography.headlineSmall,
+                color = MaterialTheme.colorScheme.onSecondary,
             )
         }
 
@@ -105,29 +104,29 @@ fun ForecastCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(24.dp))
-                .background(Color(0xFF343f5e))
+                .background(MaterialTheme.colorScheme.secondary)
                 .padding(16.dp)
         ) {
             Row {
                 Icon(
                     imageVector = Icons.Default.DateRange,
                     contentDescription = "Calendar",
-                    tint = Color.White
+                    tint = MaterialTheme.colorScheme.onSecondary
                 )
 
                 Spacer(modifier = Modifier.width(8.dp))
 
                 Text(
                     text = "3-DAY FORECAST",
-                    fontSize = 20.sp,
-                    color = Color.White
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onSecondary
                 )
             }
 
             Spacer(modifier = Modifier.height(8.dp))
 
             forecast.forecastDay.forEach { day ->
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(8.dp))
                 HorizontalDivider(thickness = 1.dp, color = Color.Gray)
                 Spacer(modifier = Modifier.height(4.dp))
                 ForecastRow(
@@ -151,9 +150,9 @@ fun ForecastCard(
                     verticalArrangement = Arrangement.SpaceEvenly
                 ) {
                     Text(
-                        text = "${if (state.temperatureUnit == "°C") hour.temperatureCelsius else hour.temperatureFahrenheit}°",
-                        fontSize = 16.sp,
-                        color = Color.White
+                        text = "${if (state.temperatureUnit == "°C") hour.temperatureCelsius.toInt() else hour.temperatureFahrenheit.toInt()}°",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onPrimary
                     )
 
                     AsyncImage(
@@ -165,14 +164,14 @@ fun ForecastCard(
                     Text(
                         text = "${if (state.windSpeedUnit == "km/h") hour.windSpeedKph else hour.windSpeedMph}" +
                                 if (state.windSpeedUnit == "km/h") "km/h" else "mph",
-                        fontSize = 12.sp,
-                        color = Color.White
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onPrimary
                     )
 
                     Text(
                         text = hour.time.takeLast(5),
-                        fontSize = 12.sp,
-                        color = Color.White
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onPrimary
                     )
                 }
             }
@@ -213,7 +212,7 @@ fun ForecastCard(
                     modifier = Modifier.weight(1f).aspectRatio(1f),
                     icon = Icons.Default.Thermostat,
                     title = "FEELS LIKE",
-                    value = "${if (state.temperatureUnit == "°C") forecast.feelsLikeCelsius else forecast.feelsLikeFahrenheit}°"
+                    value = "${if (state.temperatureUnit == "°C") forecast.feelsLikeCelsius.toInt() else forecast.feelsLikeFahrenheit.toInt()}°"
                 )
 
                 WeatherComponentCard(

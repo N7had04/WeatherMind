@@ -19,5 +19,6 @@ data class WeatherForecast(
     val chanceOfRain: Int,
     val lastUpdatedEpoch: Long,
     val lastUpdated: String,
+    val isCurrentLocation: Boolean,
     val forecastDay: List<WeatherForecastDay>
 )

@@ -29,5 +29,9 @@ data class ForecastEntity(
     val lastUpdatedEpoch: Long,
     @ColumnInfo(defaultValue = "")
     val lastUpdated: String,
+    @ColumnInfo(defaultValue = "0")
+    val isCurrentLocation: Boolean,
+    @ColumnInfo(defaultValue = "0")
+    val sortOrder: Int = 0,
     val forecastDay: List<ForecastDay>
 )

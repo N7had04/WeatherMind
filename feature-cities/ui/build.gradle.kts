@@ -50,7 +50,14 @@ dependencies {
     // ViewModel
     implementation(libs.androidx.lifecycle.viewmodel.compose)
 
+    // Coil
+    implementation(libs.coil.compose)
+
+    implementation(libs.reorderable)
+    implementation(libs.androidx.compose.material.icons.extended)
+
     implementation(project(":core:domain"))
+    implementation(project(":core:ui"))
     implementation(project(":feature-cities:domain"))
     implementation(project(":feature-home:domain"))
 

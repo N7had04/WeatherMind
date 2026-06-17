@@ -47,7 +47,8 @@ fun Navigation(
                 state = citiesState,
                 onNavigateBack = { navController.popBackStack() },
                 onNavigateToSearch = { navController.navigate(Screens.Search.route) },
-                onDeleteForecast = { locationName -> citiesViewModel.deleteForecastFromDb(locationName) }
+                onDeleteForecast = { locationName -> citiesViewModel.deleteForecastFromDb(locationName) },
+                onReorder = { from, to -> citiesViewModel.onReorder(from, to) }
             )
         }
 
@@ -59,7 +60,8 @@ fun Navigation(
                 onNavigateBack = { navController.popBackStack() },
                 onSetTemperatureUnit = { settingsViewModel.onSetTemperatureUnit(it) },
                 onSetWindSpeedUnit = { settingsViewModel.onSetWindSpeedUnit(it) },
-                onSetAtmosphericPressureUnit = { settingsViewModel.onSetAtmosphericPressureUnit(it) }
+                onSetAtmosphericPressureUnit = { settingsViewModel.onSetAtmosphericPressureUnit(it) },
+                onSetThemeMode = { settingsViewModel.onSetThemeMode(it) }
             )
         }
 
@@ -78,7 +80,16 @@ fun Navigation(
 
         composable(route = Screens.SearchResult.route) {
             SearchResultScreen(
-
+                state = citiesState,
+                onNavigateBack = { navController.popBackStack() },
+                onAddForecast = { forecast ->
+                    citiesViewModel.saveForecastToDb(forecast)
+                    navController.navigate(Screens.Home.route) {
+                        popUpTo(Screens.Cities.route) {
+                            inclusive = true
+                        }
+                    }
+                }
             )
         }
     }

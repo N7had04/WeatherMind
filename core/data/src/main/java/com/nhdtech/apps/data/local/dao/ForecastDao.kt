@@ -15,6 +15,9 @@ interface ForecastDao {
     @Query("DELETE FROM forecast WHERE locationName = :locationName")
     suspend fun deleteCurrentForecast(locationName: String)
 
-    @Query("SELECT * FROM forecast")
+    @Query("SELECT * FROM forecast ORDER BY isCurrentLocation DESC, sortOrder ASC")
     fun getAllForecasts(): Flow<List<ForecastEntity>>
+
+    @Query("UPDATE forecast SET sortOrder = :order WHERE locationName = :locationName")
+    suspend fun updateSortOrder(locationName: String, order: Int)
 }

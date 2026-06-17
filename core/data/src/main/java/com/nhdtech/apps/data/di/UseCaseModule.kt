@@ -4,10 +4,12 @@ import com.nhdtech.apps.domain.repository.CoreRepository
 import com.nhdtech.apps.domain.usecase.GetAtmosphericPressureUnitUseCase
 import com.nhdtech.apps.domain.usecase.GetForecastFromApiUseCase
 import com.nhdtech.apps.domain.usecase.GetTemperatureUnitUseCase
+import com.nhdtech.apps.domain.usecase.GetThemeModeUseCase
 import com.nhdtech.apps.domain.usecase.GetWindSpeedUnitUseCase
 import com.nhdtech.apps.domain.usecase.SaveForecastToDbUseCase
 import com.nhdtech.apps.domain.usecase.SetAtmosphericPressureUnitUseCase
 import com.nhdtech.apps.domain.usecase.SetTemperatureUnitUseCase
+import com.nhdtech.apps.domain.usecase.SetThemeModeUseCase
 import com.nhdtech.apps.domain.usecase.SetWindSpeedUnitUseCase
 import dagger.Module
 import dagger.Provides
@@ -80,5 +82,21 @@ class UseCaseModule {
         settingsRepository: CoreRepository
     ): SetAtmosphericPressureUnitUseCase {
         return SetAtmosphericPressureUnitUseCase(settingsRepository)
+    }
+
+    @Singleton
+    @Provides
+    fun provideGetThemeModeUseCase(
+        settingsRepository: CoreRepository
+    ): GetThemeModeUseCase {
+        return GetThemeModeUseCase(settingsRepository)
+    }
+
+    @Singleton
+    @Provides
+    fun provideSetThemeModeUseCase(
+        settingsRepository: CoreRepository
+    ): SetThemeModeUseCase {
+        return SetThemeModeUseCase(settingsRepository)
     }
 }

@@ -87,12 +87,15 @@ class HomeViewModel @Inject constructor(
 
             when (val result = getLocationForecastUseCase(coordinates.lat, coordinates.lon)) {
                 is Resource.Success -> {
-                    saveForecastToDbUseCase(result.data)
+                    val result = result.data.copy(
+                        isCurrentLocation = true
+                    )
+                    saveForecastToDbUseCase(result)
                     setHasAccessedLocationUseCase(true)
                     _state.update {
-                        it.copy(locationForecast = result.data, isLoading = false)
+                        it.copy(locationForecast = result, isLoading = false)
                     }
-                    Log.d("HomeViewModel", "Forecast: ${result.data}")
+                    Log.d("HomeViewModel", "Forecast: $result")
                 }
                 is Resource.Error -> {
                     _state.update { it.copy(error = result.message, isLoading = false) }

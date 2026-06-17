@@ -12,14 +12,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 
 @Composable
 fun WeatherComponentCard(
@@ -32,7 +31,7 @@ fun WeatherComponentCard(
         shape = RoundedCornerShape(16.dp),
         modifier = modifier,
         colors = CardDefaults.cardColors(
-            containerColor = Color(0xFF343f5e)
+            containerColor = MaterialTheme.colorScheme.secondary
         )
     ) {
         Column(
@@ -47,22 +46,22 @@ fun WeatherComponentCard(
                 Icon(
                     imageVector = icon,
                     contentDescription = title,
-                    tint = Color.White
+                    tint = MaterialTheme.colorScheme.onSecondary
                 )
 
                 Spacer(modifier = Modifier.width(8.dp))
 
                 Text(
                     text = title,
-                    color = Color.White,
-                    fontSize = 16.sp
+                    color = MaterialTheme.colorScheme.onSecondary,
+                    style = MaterialTheme.typography.titleMedium
                 )
             }
 
             Text(
                 text = value,
-                color = Color.White,
-                fontSize = 24.sp
+                color = MaterialTheme.colorScheme.onSecondary,
+                style = MaterialTheme.typography.headlineSmall
             )
         }
     }

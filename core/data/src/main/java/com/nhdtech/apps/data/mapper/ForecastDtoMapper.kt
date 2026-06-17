@@ -53,6 +53,7 @@ fun ForecastDto.toEntity(): ForecastEntity {
         chanceOfRain = current.chanceOfRain,
         lastUpdatedEpoch = current.lastUpdatedEpoch * 1000L,
         lastUpdated = current.lastUpdated,
+        isCurrentLocation = false,
         forecastDay = forecast.forecastday.map { it.toEntity() }
     )
 }

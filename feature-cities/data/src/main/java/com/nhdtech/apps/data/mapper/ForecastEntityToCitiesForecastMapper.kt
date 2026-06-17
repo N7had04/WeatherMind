@@ -13,6 +13,7 @@ fun ForecastEntity.toCitiesForecast(): CitiesForecast {
         minTempCelsius = forecastDay[0].minTempCelsius,
         minTempFahrenheit = forecastDay[0].minTempFahrenheit,
         conditionText = conditionText,
-        lastUpdated = lastUpdated
+        lastUpdated = lastUpdated,
+        isCurrentLocation = isCurrentLocation
     )
 }

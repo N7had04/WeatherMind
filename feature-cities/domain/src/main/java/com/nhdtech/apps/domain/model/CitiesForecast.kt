@@ -9,5 +9,6 @@ data class CitiesForecast(
     val minTempCelsius: Double,
     val minTempFahrenheit: Double,
     val conditionText: String,
-    val lastUpdated: String
+    val lastUpdated: String,
+    val isCurrentLocation: Boolean
 )

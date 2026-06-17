@@ -11,6 +11,7 @@ import com.nhdtech.apps.domain.usecase.GetTemperatureUnitUseCase
 import com.nhdtech.apps.domain.usecase.GetWindSpeedUnitUseCase
 import com.nhdtech.apps.domain.usecase.SaveForecastToDbUseCase
 import com.nhdtech.apps.domain.usecase.SearchCitiesUseCase
+import com.nhdtech.apps.domain.usecase.UpdateForecastOrderUseCase
 import com.nhdtech.apps.domain.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,6 +25,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CitiesViewModel @Inject constructor(
     getAllCitiesForecastsFromDbUseCase: GetAllCitiesForecastsFromDbUseCase,
+    private val updateForecastOrderUseCase: UpdateForecastOrderUseCase,
     private val deleteForecastFromDbUseCase: DeleteForecastFromDbUseCase,
     private val getForecastFromApiUseCase: GetForecastFromApiUseCase,
     private val saveForecastToDbUseCase: SaveForecastToDbUseCase,
@@ -50,6 +52,18 @@ class CitiesViewModel @Inject constructor(
             .launchIn(viewModelScope)
     }
 
+    fun onReorder(from: Int, to: Int) {
+        if (from == 0 || to == 0) return
+        val reordered = _state.value.savedForecasts.toMutableList().apply {
+            add(to, removeAt(from))
+        }
+        _state.update { it.copy(savedForecasts = reordered) }
+
+        viewModelScope.launch {
+            updateForecastOrderUseCase(reordered)
+        }
+    }
+
     fun deleteForecastFromDb(locationName: String) {
         viewModelScope.launch {
             deleteForecastFromDbUseCase(locationName)
@@ -74,6 +88,16 @@ class CitiesViewModel @Inject constructor(
     }
 
     fun searchCities(searchCityText: String) {
+        if (searchCityText.isBlank()) {
+            _state.update {
+                it.copy(
+                    cities = emptyList(),
+                    error = null,
+                    isLoading = false
+                )
+            }
+            return
+        }
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, error = null) }
             when (val result = searchCitiesUseCase(searchCityText)) {
