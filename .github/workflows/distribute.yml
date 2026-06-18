@@ -38,7 +38,7 @@ jobs:
         run: chmod +x gradlew
 
       # 6. Build release APK
-      - name: Build Release APK
+      - name: Build Release APK --stacktree
         run: ./gradlew assembleRelease
         env:
           API_KEY: ${{ secrets.API_KEY }}
@@ -46,6 +46,15 @@ jobs:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          
+      - name: Upload build reports on failure
+        if: failure()    # ← only uploads when build fails
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-reports
+          path: |
+            app/build/reports/
+            app/build/outputs/logs/
 
       # 7. Upload to Firebase App Distribution
       - name: Upload to Firebase App Distribution
