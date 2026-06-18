@@ -1,8 +1,15 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.util.Properties
 
-val localProperties = Properties()
-localProperties.load(rootProject.file("local.properties").inputStream())
+val localProperties = Properties().apply {
+    val file = rootProject.file("local.properties")
+    if (file.exists()) load(file.inputStream())
+}
+
+fun secret(key: String): String =
+    System.getenv(key)
+        ?: localProperties[key] as? String // local fallback
+        ?: error("Missing secret: $key")
 
 plugins {
     alias(libs.plugins.android.library)
@@ -18,11 +25,17 @@ android {
 
     defaultConfig {
         minSdk = 24
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
-        buildConfigField("String", "API_KEY", "\"${localProperties.getProperty("API_KEY")}\"")
-        buildConfigField("String", "BASE_URL", "\"${localProperties.getProperty("BASE_URL")}\"")
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += mapOf(
+                    "room.schemaLocation" to "$projectDir/schemas"
+                )
+            }
+        }
+        buildConfigField("String", "API_KEY", "\"${secret("API_KEY")}\"")
+        buildConfigField("String", "BASE_URL", "\"${secret("BASE_URL")}\"")
     }
 
     buildTypes {

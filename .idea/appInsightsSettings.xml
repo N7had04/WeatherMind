@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.nhdtech.apps.weathermind" />
+                  <option name="mobileSdkAppId" value="1:69866170498:android:639a41421f16c28e2f6c9b" />
+                  <option name="projectId" value="weathermind-app" />
+                  <option name="projectNumber" value="69866170498" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
