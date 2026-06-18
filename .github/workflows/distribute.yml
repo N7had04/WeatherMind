@@ -40,7 +40,7 @@ jobs:
       # 4. Decode keystore from base64 secret
       - name: Decode keystore
         run: |
-          echo "${{ secrets.KEYSTORE_FILE }}" | base64 --decode > app/keystore.jks
+          echo "${{ secrets.KEYSTORE_FILE }}" | base64 --decode > app/weathermind.jks
 
       # 5. Grant execute permission to gradlew
       - name: Grant gradlew permission
