@@ -10,7 +10,6 @@
       <module name="WeatherMind.feature-detail.ui" target="21" />
       <module name="WeatherMind.feature-saved.data" target="21" />
       <module name="WeatherMind.feature-saved.ui" target="21" />
-      <module name="WeatherMind.feature-settings.data" target="21" />
       <module name="WeatherMind.feature.cities" target="21" />
       <module name="WeatherMind.feature.home.presentation" target="21" />
     </bytecodeTargetLevel>

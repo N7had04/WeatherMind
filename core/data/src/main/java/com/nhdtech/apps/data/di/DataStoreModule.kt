@@ -32,7 +32,7 @@ object DataStoreModule {
 
     @Singleton
     @Provides
-    fun provideSettingsPreferences(
+    fun provideAppPreferences(
         dataStore: DataStore<Preferences>
     ): AppPreferences {
         return AppPreferences(dataStore)

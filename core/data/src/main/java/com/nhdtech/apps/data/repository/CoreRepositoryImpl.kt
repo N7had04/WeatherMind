@@ -49,20 +49,4 @@ class CoreRepositoryImpl(
     override fun getThemeMode(): Flow<ThemeMode> {
         return appPreferences.themeMode
     }
-
-    override suspend fun setTemperatureUnit(value: String) {
-        appPreferences.setTemperatureUnit(value)
-    }
-
-    override suspend fun setWindSpeedUnit(value: String) {
-        appPreferences.setWindSpeedUnit(value)
-    }
-
-    override suspend fun setAtmosphericPressureUnit(value: String) {
-        appPreferences.setAtmosphericPressureUnit(value)
-    }
-
-    override suspend fun setThemeMode(mode: ThemeMode) {
-        appPreferences.setThemeMode(mode)
-    }
 }

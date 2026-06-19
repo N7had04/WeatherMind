@@ -12,8 +12,4 @@ interface CoreRepository {
     fun getWindSpeedUnit(): Flow<String>
     fun getAtmosphericPressureUnit(): Flow<String>
     fun getThemeMode(): Flow<ThemeMode>
-    suspend fun setTemperatureUnit(value: String)
-    suspend fun setWindSpeedUnit(value: String)
-    suspend fun setAtmosphericPressureUnit(value: String)
-    suspend fun setThemeMode(mode: ThemeMode)
 }

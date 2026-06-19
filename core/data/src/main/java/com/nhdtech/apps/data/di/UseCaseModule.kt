@@ -7,10 +7,6 @@ import com.nhdtech.apps.domain.usecase.GetTemperatureUnitUseCase
 import com.nhdtech.apps.domain.usecase.GetThemeModeUseCase
 import com.nhdtech.apps.domain.usecase.GetWindSpeedUnitUseCase
 import com.nhdtech.apps.domain.usecase.SaveForecastToDbUseCase
-import com.nhdtech.apps.domain.usecase.SetAtmosphericPressureUnitUseCase
-import com.nhdtech.apps.domain.usecase.SetTemperatureUnitUseCase
-import com.nhdtech.apps.domain.usecase.SetThemeModeUseCase
-import com.nhdtech.apps.domain.usecase.SetWindSpeedUnitUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,80 +19,48 @@ class UseCaseModule {
     @Singleton
     @Provides
     fun provideGetForecastFromApiUseCase(
-        repository: CoreRepository
+        coreRepository: CoreRepository
     ): GetForecastFromApiUseCase {
-        return GetForecastFromApiUseCase(repository)
+        return GetForecastFromApiUseCase(coreRepository)
     }
 
     @Singleton
     @Provides
     fun provideSaveForecastToDbUseCase(
-        repository: CoreRepository
+        coreRepository: CoreRepository
     ): SaveForecastToDbUseCase {
-        return SaveForecastToDbUseCase(repository)
+        return SaveForecastToDbUseCase(coreRepository)
     }
 
     @Singleton
     @Provides
     fun provideGetTemperatureUnitUseCase(
-        settingsRepository: CoreRepository
+        coreRepository: CoreRepository
     ): GetTemperatureUnitUseCase {
-        return GetTemperatureUnitUseCase(settingsRepository)
-    }
-
-    @Singleton
-    @Provides
-    fun provideSetTemperatureUnitUseCase(
-        settingsRepository: CoreRepository
-    ): SetTemperatureUnitUseCase {
-        return SetTemperatureUnitUseCase(settingsRepository)
+        return GetTemperatureUnitUseCase(coreRepository)
     }
 
     @Singleton
     @Provides
     fun provideGetWindSpeedUnitUseCase(
-        settingsRepository: CoreRepository
+        coreRepository: CoreRepository
     ): GetWindSpeedUnitUseCase {
-        return GetWindSpeedUnitUseCase(settingsRepository)
-    }
-
-    @Singleton
-    @Provides
-    fun provideSetWindSpeedUnitUseCase(
-        settingsRepository: CoreRepository
-    ): SetWindSpeedUnitUseCase {
-        return SetWindSpeedUnitUseCase(settingsRepository)
+        return GetWindSpeedUnitUseCase(coreRepository)
     }
 
     @Singleton
     @Provides
     fun provideGetAtmosphericPressureUnitUseCase(
-        settingsRepository: CoreRepository
+        coreRepository: CoreRepository
     ): GetAtmosphericPressureUnitUseCase {
-        return GetAtmosphericPressureUnitUseCase(settingsRepository)
-    }
-
-    @Singleton
-    @Provides
-    fun provideSetAtmosphericPressureUnitUseCase(
-        settingsRepository: CoreRepository
-    ): SetAtmosphericPressureUnitUseCase {
-        return SetAtmosphericPressureUnitUseCase(settingsRepository)
+        return GetAtmosphericPressureUnitUseCase(coreRepository)
     }
 
     @Singleton
     @Provides
     fun provideGetThemeModeUseCase(
-        settingsRepository: CoreRepository
+        coreRepository: CoreRepository
     ): GetThemeModeUseCase {
-        return GetThemeModeUseCase(settingsRepository)
-    }
-
-    @Singleton
-    @Provides
-    fun provideSetThemeModeUseCase(
-        settingsRepository: CoreRepository
-    ): SetThemeModeUseCase {
-        return SetThemeModeUseCase(settingsRepository)
+        return GetThemeModeUseCase(coreRepository)
     }
 }

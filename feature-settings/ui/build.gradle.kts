@@ -70,6 +70,7 @@ dependencies {
 
     implementation(project(":core:domain"))
     implementation(project(":core:ui"))
+    implementation(project(":feature-settings:domain"))
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
