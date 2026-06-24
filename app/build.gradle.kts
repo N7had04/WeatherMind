@@ -1,35 +1,15 @@
 import com.google.firebase.appdistribution.gradle.firebaseAppDistribution
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 
-fun getGitTag(): String {
-    return try {
-        val process = ProcessBuilder("git", "describe", "--tags", "--exact-match")
-            .directory(rootDir)
-            .redirectErrorStream(true)
-            .start()
-        val output = process.inputStream.bufferedReader().readText().trim()
-        process.waitFor()
-        if (process.exitValue() == 0) output else ""
-    } catch (e: Exception) {
-        ""
-    }
+val versionProps = Properties().apply {
+    load(rootProject.file("version.properties").inputStream())
 }
 
-fun versionNameFromTag(): String {
-    val tag = getGitTag()
-    if (tag.isEmpty()) return "0.0.0-dev"
-    return tag.removePrefix("v").substringBefore("-")
-}
-
-fun versionCodeFromTag(): Int {
-    val name = versionNameFromTag()
-    if (name == "0.0.0-dev") return 1
-    val parts = name.split(".").map { it.toIntOrNull() ?: 0 }
-    val major = parts.getOrElse(0) { 0 }
-    val minor = parts.getOrElse(1) { 0 }
-    val patch = parts.getOrElse(2) { 0 }
-    return major * 1_000_000 + minor * 1_000 + patch
-}
+val major = versionProps["VERSION_MAJOR"].toString().toInt()
+val minor = versionProps["VERSION_MINOR"].toString().toInt()
+val patch = versionProps["VERSION_PATCH"].toString().toInt()
+val isCI = System.getenv("CI") == "true"
 
 plugins {
     alias(libs.plugins.android.application)
@@ -50,8 +30,8 @@ android {
         applicationId = "com.nhdtech.apps.weathermind"
         minSdk = 24
         targetSdk = 36
-        versionCode = versionCodeFromTag()
-        versionName = versionNameFromTag()
+        versionCode = major * 1_000_000 + minor * 1_000 + patch
+        versionName = if (isCI) "$major.$minor.$patch" else "$major.$minor.$patch-dev"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
