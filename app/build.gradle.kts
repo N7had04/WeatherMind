@@ -31,10 +31,6 @@ fun versionCodeFromTag(): Int {
     return major * 1_000_000 + minor * 1_000 + patch
 }
 
-println("DEBUG: Detected tag = '${getGitTag()}'")
-println("DEBUG: versionName = '${versionNameFromTag()}'")
-println("DEBUG: versionCode = '${versionCodeFromTag()}'")
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
