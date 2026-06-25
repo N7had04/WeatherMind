@@ -2,14 +2,24 @@ import com.google.firebase.appdistribution.gradle.firebaseAppDistribution
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.util.Properties
 
-val versionProps = Properties().apply {
-    load(rootProject.file("version.properties").inputStream())
-}
-
-val major = versionProps["VERSION_MAJOR"].toString().toInt()
-val minor = versionProps["VERSION_MINOR"].toString().toInt()
-val patch = versionProps["VERSION_PATCH"].toString().toInt()
 val isCI = System.getenv("CI") == "true"
+var versionName: String
+var versionCode: Int
+
+if (isCI) {
+    versionName = System.getenv("VERSION_NAME") ?: "0.0.0"
+    versionCode = System.getenv("VERSION_CODE")?.toIntOrNull() ?: 1
+} else {
+    val versionProps = Properties().apply {
+        val file = rootProject.file("version.properties")
+        if (file.exists()) load(file.inputStream())
+    }
+    val major = versionProps["VERSION_MAJOR"]?.toString()?.toIntOrNull() ?: 0
+    val minor = versionProps["VERSION_MINOR"]?.toString()?.toIntOrNull() ?: 0
+    val patch = versionProps["VERSION_PATCH"]?.toString()?.toIntOrNull() ?: 0
+    versionName = "$major.$minor.$patch-dev"
+    versionCode = major * 1_000_000 + minor * 1_000 + patch
+}
 
 plugins {
     alias(libs.plugins.android.application)
@@ -30,8 +40,8 @@ android {
         applicationId = "com.nhdtech.apps.weathermind"
         minSdk = 24
         targetSdk = 36
-        versionCode = major * 1_000_000 + minor * 1_000 + patch
-        versionName = if (isCI) "$major.$minor.$patch" else "$major.$minor.$patch-dev"
+        versionCode = versionCode
+        versionName = versionName
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 

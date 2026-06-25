@@ -203,6 +203,8 @@ jobs:
         run: ./gradlew clean assembleRelease --stacktrace
         env:
           CI: "true"
+          VERSION_NAME: ${{ needs.validate.outputs.version_name }}
+          VERSION_CODE: ${{ needs.validate.outputs.version_code }}
           API_KEY: ${{ secrets.API_KEY }}
           BASE_URL: ${{ secrets.BASE_URL }}
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
