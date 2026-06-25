@@ -3,12 +3,12 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.util.Properties
 
 val isCI = System.getenv("CI") == "true"
-var versionName: String
-var versionCode: Int
+var appVersionName: String
+var appVersionCode: Int
 
 if (isCI) {
-    versionName = System.getenv("VERSION_NAME") ?: "0.0.0"
-    versionCode = System.getenv("VERSION_CODE")?.toIntOrNull() ?: 1
+    appVersionName = System.getenv("VERSION_NAME") ?: "0.0.0"
+    appVersionCode = System.getenv("VERSION_CODE")?.toIntOrNull() ?: 1
 } else {
     val versionProps = Properties().apply {
         val file = rootProject.file("version.properties")
@@ -17,8 +17,8 @@ if (isCI) {
     val major = versionProps["VERSION_MAJOR"]?.toString()?.toIntOrNull() ?: 0
     val minor = versionProps["VERSION_MINOR"]?.toString()?.toIntOrNull() ?: 0
     val patch = versionProps["VERSION_PATCH"]?.toString()?.toIntOrNull() ?: 0
-    versionName = "$major.$minor.$patch-dev"
-    versionCode = major * 1_000_000 + minor * 1_000 + patch
+    appVersionName = "$major.$minor.$patch-dev"
+    appVersionCode = major * 1_000_000 + minor * 1_000 + patch
 }
 
 plugins {
@@ -40,8 +40,8 @@ android {
         applicationId = "com.nhdtech.apps.weathermind"
         minSdk = 24
         targetSdk = 36
-        versionCode = versionCode
-        versionName = versionName
+        versionCode = appVersionCode
+        versionName = appVersionName
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
