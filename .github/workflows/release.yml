@@ -11,9 +11,20 @@ permissions:
   contents: write
 
 jobs:
-  release:
-    name: Build & Distribute
+
+  # ─────────────────────────────────────────
+  # JOB 1 — Validate tag + read version
+  # ─────────────────────────────────────────
+  validate:
+    name: ✅ Validate
     runs-on: ubuntu-latest
+
+    outputs:
+      version_name: ${{ steps.version.outputs.version_name }}
+      version_code: ${{ steps.version.outputs.version_code }}
+      tag: ${{ steps.track.outputs.tag }}
+      group: ${{ steps.track.outputs.group }}
+      is_prerelease: ${{ steps.track.outputs.is_prerelease }}
 
     steps:
       - name: Checkout
@@ -34,15 +45,25 @@ jobs:
       - name: Read version from version.properties
         id: version
         run: |
-          # Read version.properties
-          MAJOR=$(grep VERSION_MAJOR version.properties | cut -d'=' -f2)
-          MINOR=$(grep VERSION_MINOR version.properties | cut -d'=' -f2)
-          PATCH=$(grep VERSION_PATCH version.properties | cut -d'=' -f2)
+          MAJOR=$(grep VERSION_MAJOR version.properties | cut -d'=' -f2 | tr -d '[:space:]')
+          MINOR=$(grep VERSION_MINOR version.properties | cut -d'=' -f2 | tr -d '[:space:]')
+          PATCH=$(grep VERSION_PATCH version.properties | cut -d'=' -f2 | tr -d '[:space:]')
           VERSION_NAME="$MAJOR.$MINOR.$PATCH"
           VERSION_CODE=$((MAJOR * 1000000 + MINOR * 1000 + PATCH))
           echo "version_name=$VERSION_NAME" >> "$GITHUB_OUTPUT"
           echo "version_code=$VERSION_CODE" >> "$GITHUB_OUTPUT"
           echo "✅ Version: $VERSION_NAME ($VERSION_CODE)"
+
+      - name: Verify tag matches version.properties
+        run: |
+          TAG="${{ github.ref_name }}"
+          TAG_VERSION=$(echo "$TAG" | sed 's/^v//' | sed 's/-.*//')
+          PROPS_VERSION="${{ steps.version.outputs.version_name }}"
+          if [ "$TAG_VERSION" != "$PROPS_VERSION" ]; then
+            echo "❌ Tag '$TAG_VERSION' does not match version.properties '$PROPS_VERSION'"
+            exit 1
+          fi
+          echo "✅ Tag matches version.properties: $PROPS_VERSION"
 
       - name: Determine release track
         id: track
@@ -52,23 +73,115 @@ jobs:
           if [[ "$TAG" == *"-test"* ]]; then
             echo "group=testers" >> "$GITHUB_OUTPUT"
             echo "is_prerelease=true" >> "$GITHUB_OUTPUT"
+            echo "🧪 Track: testers"
           else
             echo "group=production" >> "$GITHUB_OUTPUT"
             echo "is_prerelease=false" >> "$GITHUB_OUTPUT"
+            echo "🚀 Track: production"
           fi
 
-      - name: Verify tag matches version.properties
+  # ─────────────────────────────────────────
+  # JOB 2 — Lint (release variant)
+  # ─────────────────────────────────────────
+  lint:
+    name: 🔍 Lint
+    runs-on: ubuntu-latest
+    needs: validate
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Create local.properties
         run: |
-          TAG="${{ github.ref_name }}"
-          # Extract version from tag (strip v prefix and suffix like -test/-release)
-          TAG_VERSION=$(echo "$TAG" | sed 's/^v//' | sed 's/-.*//')
-          PROPS_VERSION="${{ steps.version.outputs.version_name }}"
-          if [ "$TAG_VERSION" != "$PROPS_VERSION" ]; then
-            echo "❌ Tag version '$TAG_VERSION' does not match version.properties '$PROPS_VERSION'"
-            echo "Please update version.properties before tagging"
-            exit 1
-          fi
-          echo "✅ Tag version matches version.properties: $PROPS_VERSION"
+          echo "API_KEY=${{ secrets.API_KEY }}" >> local.properties
+          echo "BASE_URL=${{ secrets.BASE_URL }}" >> local.properties
+          echo "sdk.dir=$ANDROID_HOME" >> local.properties
+
+      - name: Create google-services.json
+        run: echo '${{ secrets.GOOGLE_SERVICES_JSON }}' > app/google-services.json
+
+      - name: Grant gradlew permission
+        run: chmod +x gradlew
+
+      - name: Run lint
+        run: ./gradlew lintRelease --stacktrace
+
+      - name: Upload lint report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-lint-report
+          path: app/build/reports/lint-results-release.html
+
+  # ─────────────────────────────────────────
+  # JOB 3 — Unit Tests (release variant)
+  # ─────────────────────────────────────────
+  test:
+    name: 🧪 Unit Tests
+    runs-on: ubuntu-latest
+    needs: validate
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Create local.properties
+        run: |
+          echo "API_KEY=${{ secrets.API_KEY }}" >> local.properties
+          echo "BASE_URL=${{ secrets.BASE_URL }}" >> local.properties
+          echo "sdk.dir=$ANDROID_HOME" >> local.properties
+
+      - name: Create google-services.json
+        run: echo '${{ secrets.GOOGLE_SERVICES_JSON }}' > app/google-services.json
+
+      - name: Grant gradlew permission
+        run: chmod +x gradlew
+
+      - name: Run unit tests
+        run: ./gradlew testReleaseUnitTest --stacktrace
+
+      - name: Upload test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-test-report
+          path: app/build/reports/tests/
+
+  # ─────────────────────────────────────────
+  # JOB 4 — Build
+  # ─────────────────────────────────────────
+  build:
+    name: 🔨 Build
+    runs-on: ubuntu-latest
+    needs: [ validate, lint, test ]   # all three must pass
+
+    outputs:
+      apk_path: ${{ steps.apk.outputs.path }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -96,21 +209,29 @@ jobs:
       - name: Grant gradlew permission
         run: chmod +x gradlew
 
-      - name: Run lint
-        run: ./gradlew lintRelease --stacktrace
-
-      - name: Run unit tests
-        run: ./gradlew testReleaseUnitTest --stacktrace
-
       - name: Build Release APK
         run: ./gradlew clean assembleRelease --stacktrace
         env:
-          CI: true
+          CI: "true"
           API_KEY: ${{ secrets.API_KEY }}
           BASE_URL: ${{ secrets.BASE_URL }}
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+
+      - name: Locate APK
+        id: apk
+        run: |
+          APK_PATH=$(find app/build/outputs/apk/release -name "*.apk" | head -1)
+          echo "path=$APK_PATH" >> "$GITHUB_OUTPUT"
+          echo "✅ APK: $APK_PATH"
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-apk
+          path: app/build/outputs/apk/release/app-release.apk
+          retention-days: 7
 
       - name: Upload build reports on failure
         if: failure()
@@ -119,27 +240,57 @@ jobs:
           name: build-reports
           path: app/build/reports/
 
+  # ─────────────────────────────────────────
+  # JOB 5 — Firebase App Distribution
+  # ─────────────────────────────────────────
+  distribute:
+    name: 🔥 Firebase Distribution
+    runs-on: ubuntu-latest
+    needs: [ validate, build ]
+
+    steps:
+      - name: Download APK artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: release-apk
+          path: app/build/outputs/apk/release/
+
       - name: Upload to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
           appId: ${{ secrets.FIREBASE_APP_ID }}
           serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          groups: ${{ steps.track.outputs.group }}
+          groups: ${{ needs.validate.outputs.group }}
           file: app/build/outputs/apk/release/app-release.apk
           releaseNotes: |
-            Version ${{ steps.version.outputs.version_name }} (${{ steps.version.outputs.version_code }})
-            Tag: ${{ steps.track.outputs.tag }}
-            Track: ${{ steps.track.outputs.group }}
+            Version ${{ needs.validate.outputs.version_name }} (${{ needs.validate.outputs.version_code }})
+            Tag: ${{ needs.validate.outputs.tag }}
+            Track: ${{ needs.validate.outputs.group }}
+
+  # ─────────────────────────────────────────
+  # JOB 6 — GitHub Release
+  # ─────────────────────────────────────────
+  github-release:
+    name: 📦 GitHub Release
+    runs-on: ubuntu-latest
+    needs: [ validate, build, distribute ]
+
+    steps:
+      - name: Download APK artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: release-apk
+          path: app/build/outputs/apk/release/
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ steps.track.outputs.tag }}
-          name: "v${{ steps.version.outputs.version_name }}"
-          prerelease: ${{ steps.track.outputs.is_prerelease }}
+          tag_name: ${{ needs.validate.outputs.tag }}
+          name: "WeatherMind v${{ needs.validate.outputs.version_name }}"
+          prerelease: ${{ needs.validate.outputs.is_prerelease }}
           generate_release_notes: true
           files: app/build/outputs/apk/release/app-release.apk
           body: |
-            ## WeatherMind ${{ steps.version.outputs.version_name }}
-            **Version code:** ${{ steps.version.outputs.version_code }}
-            **Track:** ${{ steps.track.outputs.group }}
+            ## WeatherMind ${{ needs.validate.outputs.version_name }}
+            **Version code:** ${{ needs.validate.outputs.version_code }}
+            **Track:** ${{ needs.validate.outputs.group }}
