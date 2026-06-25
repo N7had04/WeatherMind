@@ -4,10 +4,10 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
-
-permissions:
-  contents: write
 
 jobs:
   lint:
@@ -87,55 +87,3 @@ jobs:
         with:
           name: test-report
           path: app/build/reports/tests/
-
-  auto-tag:
-    name: 🏷️ Auto Tag
-    runs-on: ubuntu-latest
-    needs: [ lint, test ]   # only runs if both lint and test pass
-    if: github.event_name == 'push'
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          token: ${{ secrets.WORKFLOW_PAT }}
-
-      - name: Read version.properties
-        id: version
-        run: |
-          MAJOR=$(grep VERSION_MAJOR version.properties | cut -d'=' -f2 | tr -d '[:space:]')
-          MINOR=$(grep VERSION_MINOR version.properties | cut -d'=' -f2 | tr -d '[:space:]')
-          PATCH=$(grep VERSION_PATCH version.properties | cut -d'=' -f2 | tr -d '[:space:]')
-          SUFFIX=$(grep VERSION_SUFFIX version.properties | cut -d'=' -f2 | tr -d '[:space:]')
-          VERSION="$MAJOR.$MINOR.$PATCH"
-          if [ -n "$SUFFIX" ]; then
-            TAG="v$VERSION-$SUFFIX"
-          else
-            TAG="v$VERSION"
-          fi
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
-          echo "✅ Version: $VERSION | Tag: $TAG"
-
-      - name: Check if tag already exists
-        id: tag_check
-        run: |
-          TAG="${{ steps.version.outputs.tag }}"
-          if git rev-parse "$TAG" >/dev/null 2>&1; then
-            echo "exists=true" >> "$GITHUB_OUTPUT"
-            echo "⏭️ Tag $TAG already exists — skipping release"
-          else
-            echo "exists=false" >> "$GITHUB_OUTPUT"
-            echo "🆕 Tag $TAG is new — will trigger release"
-          fi
-
-      - name: Create and push tag
-        if: steps.tag_check.outputs.exists == 'false'
-        run: |
-          TAG="${{ steps.version.outputs.tag }}"
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git tag "$TAG"
-          git push origin "$TAG"
-          echo "🏷️ Created and pushed tag: $TAG"
