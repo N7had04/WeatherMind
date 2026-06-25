@@ -99,6 +99,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.WORKFLOW_PAT }}
 
       - name: Read version.properties
         id: version
