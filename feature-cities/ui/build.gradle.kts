@@ -56,10 +56,10 @@ dependencies {
     implementation(libs.reorderable)
     implementation(libs.androidx.compose.material.icons.extended)
 
-    implementation(project(":core:domain"))
-    implementation(project(":core:ui"))
-    implementation(project(":feature-cities:domain"))
-    implementation(project(":feature-home:domain"))
+    implementation(projects.core.domain)
+    implementation(projects.core.ui)
+    implementation(projects.featureCities.domain)
+    implementation(projects.featureHome.domain)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

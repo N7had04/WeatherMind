@@ -15,6 +15,6 @@ kotlin {
 }
 
 dependencies {
-    implementation(project(":core:domain"))
+    implementation(projects.core.domain)
     implementation(libs.kotlinx.coroutines.core)
 }

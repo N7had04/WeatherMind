@@ -50,7 +50,7 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 
-    implementation(project(":feature-settings:domain"))
-    implementation(project(":core:data"))
-    implementation(project(":core:domain"))
+    implementation(projects.featureSettings.domain)
+    implementation(projects.core.data)
+    implementation(projects.core.domain)
 }

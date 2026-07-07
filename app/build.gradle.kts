@@ -17,7 +17,7 @@ if (isCI) {
     val major = versionProps["VERSION_MAJOR"]?.toString()?.toIntOrNull() ?: 0
     val minor = versionProps["VERSION_MINOR"]?.toString()?.toIntOrNull() ?: 0
     val patch = versionProps["VERSION_PATCH"]?.toString()?.toIntOrNull() ?: 0
-    appVersionName = "$major.$minor.$patch-dev"
+    appVersionName = "$major.$minor.$patch"
     appVersionCode = major * 1_000_000 + minor * 1_000 + patch
 }
 
@@ -119,18 +119,18 @@ dependencies {
 
     implementation(platform(libs.firebase.bom))
 
-    implementation(project(":core:domain"))
-    implementation(project(":core:data"))
-    implementation(project(":core:ui"))
-    implementation(project(":feature-home:ui"))
-    implementation(project(":feature-home:domain"))
-    implementation(project(":feature-home:data"))
-    implementation(project(":feature-cities:data"))
-    implementation(project(":feature-cities:ui"))
-    implementation(project(":feature-cities:domain"))
-    implementation(project(":feature-settings:ui"))
-    implementation(project(":feature-settings:domain"))
-    implementation(project(":feature-settings:data"))
+    implementation(projects.core.domain)
+    implementation(projects.core.data)
+    implementation(projects.core.ui)
+    implementation(projects.featureHome.ui)
+    implementation(projects.featureHome.domain)
+    implementation(projects.featureHome.data)
+    implementation(projects.featureCities.data)
+    implementation(projects.featureCities.ui)
+    implementation(projects.featureCities.domain)
+    implementation(projects.featureSettings.ui)
+    implementation(projects.featureSettings.domain)
+    implementation(projects.featureSettings.data)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

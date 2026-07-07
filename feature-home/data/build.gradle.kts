@@ -73,9 +73,9 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.play.services)
 
-    implementation(project(":feature-home:domain"))
-    implementation(project(":core:domain"))
-    implementation(project(":core:data"))
+    implementation(projects.featureHome.domain)
+    implementation(projects.core.domain)
+    implementation(projects.core.data)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

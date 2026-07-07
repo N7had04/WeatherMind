@@ -100,5 +100,5 @@ dependencies {
     // --- DataStore ---
     implementation(libs.androidx.datastore.preferences)
 
-    implementation(project(":core:domain"))
+    implementation(projects.core.domain)
 }

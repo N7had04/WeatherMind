@@ -68,9 +68,9 @@ dependencies {
     // ViewModel
     implementation(libs.androidx.lifecycle.viewmodel.compose)
 
-    implementation(project(":core:domain"))
-    implementation(project(":core:ui"))
-    implementation(project(":feature-settings:domain"))
+    implementation(projects.core.domain)
+    implementation(projects.core.ui)
+    implementation(projects.featureSettings.domain)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -63,10 +63,10 @@ dependencies {
     // --- Serialization ---
     implementation(libs.kotlinx.serialization.json)
 
-    implementation(project(":feature-cities:domain"))
-    implementation(project(":feature-home:domain"))
-    implementation(project(":core:domain"))
-    implementation(project(":core:data"))
+    implementation(projects.featureCities.domain)
+    implementation(projects.featureHome.domain)
+    implementation(projects.core.domain)
+    implementation(projects.core.data)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
